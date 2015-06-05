@@ -1,0 +1,15 @@
+svg {
+	border: 1px solid black;
+}
+
+svg.float-left {
+	float: left;
+}
+
+svg.float-right {
+	float: right;
+}
+
+svg .highlight {
+	fill: gray;
+}

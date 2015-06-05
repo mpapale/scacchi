@@ -1,0 +1,24 @@
+{
+  "name": "scacchi",
+  "version": "0.0.1",
+  "authors": [
+    "Mike Papale <mpapale@gmail.com>"
+  ],
+  "description": "lightweight chess",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "client/js/contrib/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "backbone": "~1.2.1",
+    "bootstrap": "~3.3.4",
+    "requirejs": "~2.1.18",
+    "socket.io-client": "~1.3.5"
+  }
+}
