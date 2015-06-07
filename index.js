@@ -9,7 +9,7 @@ app.set('port', (process.env.PORT || 5000));
 app.use('/', express.static(__dirname + '/client'));
 
 io.sockets.on('connection', function(socket) {
-	var client = socket.client.request.headers.host;
+	var client = socket.client.request.connection.remoteAddress;
 	console.log(client, 'connected');
 
 	if (lastData !== null) {
