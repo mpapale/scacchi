@@ -11,7 +11,7 @@ define(
 	) {
 		return function(model) {
 			this.model = model;
-			this.socket = io('http://' + window.location.hostname + ':3000');
+			this.socket = io();
 
 			this.model.board.on('change:positions', function() {
 				this.socket.emit('change:positions', this.model.board.get('positions'));
