@@ -30,6 +30,7 @@ define(
 			render: function() {
 				var boardPositions = this.model.board.get('positions'),
 					positionSize = SIZE / boardPositions.length,
+					fontSize = positionSize/1.5,
 					white = true,
 					drawX = 0,
 					drawY = 0,
@@ -81,10 +82,10 @@ define(
 							this.$el.append($createElement('text')
 								.attr({
 									x: drawX + (positionSize/2),
-									y: drawY + (positionSize/2) + 25,
+									y: drawY + (positionSize/2) + (fontSize/2.5),
 									width: positionSize,
 									height: positionSize,
-									'font-size': positionSize/1.5,
+									'font-size': fontSize,
 									'text-anchor': 'middle',
 									'class': 'board-piece'
 								})
