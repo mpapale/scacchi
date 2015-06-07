@@ -94,6 +94,10 @@ define(
 				this.set('positions', INITIAL_POSITIONS);
 			},
 
+			save: function() {
+				this.trigger('save');
+			},
+
 			movePiece: function(oldRank, oldFile, newRank, newFile) {
 				var piece = this.get('positions')[oldRank][oldFile];
 

@@ -110,6 +110,7 @@ define(
 						$el.data('rank'), $el.data('file')
 					);
 					$highlightedPosition.attr('class', '');
+					this.model.board.save();
 				} else {
 					$el.attr('class', 'highlight');
 				}

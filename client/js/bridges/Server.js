@@ -13,7 +13,7 @@ define(
 			this.model = model;
 			this.socket = io();
 
-			this.model.board.on('change:positions', function() {
+			this.model.board.on('save', function() {
 				this.socket.emit('change:positions', this.model.board.get('positions'));
 			}.bind(this));
 
