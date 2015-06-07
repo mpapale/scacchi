@@ -9,7 +9,7 @@ define(
 		_,
 		Backbone
 	) {
-		var SIZE = $(window).width() - 50;
+		var SIZE = $(window).width() - 20;
 
 		var $createElement = function(type) {
 			return $(document.createElementNS('http://www.w3.org/2000/svg', type));
@@ -32,7 +32,8 @@ define(
 					positionSize = SIZE / boardPositions.length,
 					white = true,
 					drawX = 0,
-					drawY = 0;
+					drawY = 0,
+					$position = null;
 
 				// delegate events?
 				this.$el.empty();
@@ -56,8 +57,12 @@ define(
 					}
 
 					_.each(rank, function(piece, pieceIndex) {
-						this.$el.append($createElement('rect')
-							.attr({
+						var data = {
+							rank: this.perspective === 'black' ? boardPositions.length - rankIndex - 1: rankIndex, 
+							file: this.perspective === 'black' ? rank.length - pieceIndex - 1 : pieceIndex
+						};
+						$position = $createElement('rect');
+						$position.attr({
 								x: drawX,
 								y: drawY,
 								width: positionSize,
@@ -65,23 +70,31 @@ define(
 								fill: white ? 'white' : '#bbb'
 							})
 							.data({ 
-								rank: this.perspective === 'black' ? boardPositions.length - rankIndex - 1: rankIndex, 
-								file: this.perspective === 'black' ? rank.length - pieceIndex - 1 : pieceIndex
+								$target: $position,
+								rank: data.rank,
+								file: data.file
 							})
-							.click(this.positionClick.bind(this))
-						);
+							.click(this.positionClick.bind(this));
+						this.$el.append($position);
 
 						if (piece !== null) {
 							this.$el.append($createElement('text')
 								.attr({
 									x: drawX + (positionSize/2),
-									y: drawY + (positionSize/2) + 10,
+									y: drawY + (positionSize/2) + 25,
 									width: positionSize,
 									height: positionSize,
 									'font-size': positionSize/1.5,
-									'text-anchor': 'middle'
+									'text-anchor': 'middle',
+									'class': 'board-piece'
+								})
+								.data({
+									$target: $position,
+									rank: data.rank,
+									file: data.file
 								})
 								.text(piece.label)
+								.click(this.positionClick.bind(this))
 							);
 						}
 
@@ -98,12 +111,13 @@ define(
 
 			positionClick: function(e) {
 				var $el = $(e.target),
-					cssClass = $el.attr('class'),
+					$target = $el.data('$target'),
+					cssClass = $target.attr('class'),
 					highlightedPositions = this.$el.find('.highlight'),
 					$highlightedPosition = highlightedPositions.length && $(highlightedPositions.get(0));
 
 				if (cssClass === 'highlight') {
-					$el.attr('class', '');
+					$target.attr('class', '');
 				} else if ($highlightedPosition) {
 					this.model.board.movePiece(
 						$highlightedPosition.data('rank'), $highlightedPosition.data('file'),
@@ -112,7 +126,7 @@ define(
 					$highlightedPosition.attr('class', '');
 					this.model.board.save();
 				} else {
-					$el.attr('class', 'highlight');
+					$target.attr('class', 'highlight');
 				}
 			}
 		});

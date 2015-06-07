@@ -18,8 +18,8 @@ define(
 				KING: 'K'
 			},
 			COLORS = {
-				WHITE: 1,
-				BLACK: 2
+				WHITE: 'white',
+				BLACK: 'black'
 			},
 			Piece = function(type, color) {
 				this.type = type;
@@ -89,9 +89,7 @@ define(
 		return Backbone.Model.extend({
 			initialize: function() {
 				Backbone.Model.prototype.initialize.apply(this, arguments);
-
-				// TODO user input for definition
-				this.set('positions', INITIAL_POSITIONS);
+				this.setDefault();
 			},
 
 			save: function() {
@@ -99,13 +97,35 @@ define(
 			},
 
 			movePiece: function(oldRank, oldFile, newRank, newFile) {
-				var piece = this.get('positions')[oldRank][oldFile];
+				var piece = this.get('positions')[oldRank][oldFile],
+					existingPiece = this.get('positions')[newRank][newFile],
+					existingColor = existingPiece && existingPiece.color,
+					capturedKey,
+					captured;
 
 				if (piece !== null) {
-					this.get('positions')[oldRank][oldFile] = null;
-					this.get('positions')[newRank][newFile] = piece;	
-					this.trigger('change:positions');
+					if (existingPiece === null || existingPiece.color !== piece.color) {
+						if (existingPiece !== null) {
+							capturedKey = 'captured-' + existingPiece.color;
+							captured = this.get(capturedKey);
+							captured.push(existingPiece);
+							this.trigger('change:' + capturedKey);
+						}
+
+						this.get('positions')[oldRank][oldFile] = null;
+						this.get('positions')[newRank][newFile] = piece;	
+						this.trigger('change:positions');
+					}
 				}
+
+			},
+
+			setDefault: function() {
+				this.set({
+					positions: INITIAL_POSITIONS,
+					'captured-white': [],
+					'captured-black': []
+				});
 			}
 		});
 	}

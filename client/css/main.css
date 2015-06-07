@@ -13,3 +13,7 @@ svg.float-right {
 svg .highlight {
 	fill: gray;
 }
+
+svg .board-piece {
+	cursor: default;
+}
