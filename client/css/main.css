@@ -1,7 +1,3 @@
-svg {
-	border: 1px solid black;
-}
-
 svg.float-left {
 	float: left;
 }
@@ -16,4 +12,9 @@ svg .highlight {
 
 svg .board-piece {
 	cursor: default;
+}
+
+svg {
+	background-color: #eee;
+	padding: 1px;
 }

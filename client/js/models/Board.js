@@ -96,12 +96,33 @@ define(
 				this.trigger('save');
 			},
 
-			movePiece: function(oldRank, oldFile, newRank, newFile) {
-				var piece = this.get('positions')[oldRank][oldFile],
-					existingPiece = this.get('positions')[newRank][newFile],
-					existingColor = existingPiece && existingPiece.color,
+			movePiece: function() {
+				var piece,
+					oldRank,
+					oldFile,
+					newRank,
+					newFile,
+					existingPiece,
+					existingColor,
 					capturedKey,
-					captured;
+					captured,
+					setOld = false;
+
+				if (_.isObject(arguments[0])) {
+					piece = arguments[0];
+					newRank = arguments[1];
+					newFile = arguments[2];
+					setOld = false;
+				} else {
+					oldRank = arguments[0];
+					oldFile = arguments[1];
+					piece = this.get('positions')[oldRank][oldFile];
+					newRank = arguments[2];
+					newFile = arguments[3];
+					setOld = true;
+				}
+				existingPiece = this.get('positions')[newRank][newFile];
+				existingColor = existingPiece && existingPiece.color;
 
 				if (piece !== null) {
 					if (existingPiece === null || existingPiece.color !== piece.color) {
@@ -112,7 +133,14 @@ define(
 							this.trigger('change:' + capturedKey);
 						}
 
-						this.get('positions')[oldRank][oldFile] = null;
+						if (setOld) {
+							this.get('positions')[oldRank][oldFile] = null;
+						} else {
+							this.set({
+								'captured-white': _.without(this.get('captured-white'), piece),
+								'captured-black': _.without(this.get('captured-black'), piece)
+							});
+						}
 						this.get('positions')[newRank][newFile] = piece;	
 						this.trigger('change:positions');
 					}

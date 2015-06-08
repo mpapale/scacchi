@@ -14,11 +14,11 @@ define(
 			this.socket = io();
 
 			this.model.board.on('save', function() {
-				this.socket.emit('change:positions', this.model.board.get('positions'));
+				this.socket.emit('change:positions', this.model.board.toJSON());
 			}.bind(this));
 
 			this.socket.on('change:positions', function(data) {
-				this.model.board.set('positions', data);
+				this.model.board.set(data);
 			}.bind(this));
 		};
 	}
