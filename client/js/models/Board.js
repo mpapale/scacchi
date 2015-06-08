@@ -141,7 +141,8 @@ define(
 								'captured-black': _.without(this.get('captured-black'), piece)
 							});
 						}
-						this.get('positions')[newRank][newFile] = piece;	
+						this.get('positions')[newRank][newFile] = piece;
+						this.set('last-moved', piece.color);	
 						this.trigger('change:positions');
 					}
 				}
@@ -152,7 +153,8 @@ define(
 				this.set({
 					positions: INITIAL_POSITIONS,
 					'captured-white': [],
-					'captured-black': []
+					'captured-black': [],
+					'last-moved': null
 				});
 			}
 		});

@@ -1,4 +1,5 @@
 var express = require('express');
+var favicon = require('serve-favicon');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
@@ -6,7 +7,9 @@ var io = require('socket.io').listen(server);
 var lastData = null;
 
 app.set('port', (process.env.PORT || 5000));
+app.use(favicon(__dirname + '/client/images/favicon.ico'));
 app.use('/', express.static(__dirname + '/client'));
+
 
 io.sockets.on('connection', function(socket) {
 	var client = socket.client.request.connection.remoteAddress;
