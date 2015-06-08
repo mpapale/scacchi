@@ -27,6 +27,7 @@ define(
 				this.listenTo(this.model.board, 'change:positions', this.render);
 				this.listenTo(this.model.board, 'change:captured-white', this.render);
 				this.listenTo(this.model.board, 'change:captured-black', this.render);
+				this.listenTo(this.model.board, 'change:last-moved', this.render);
 			},
 
 			render: function() {
@@ -114,6 +115,19 @@ define(
 
 				// Render the captured pieces
 				drawY += 20; // random buffer, refactor TODO
+
+				$createElement('text')
+					.attr({
+						x: 0,
+						y: drawY,
+						'font-size': '20'
+					})
+					.text('Last moved: ' + 
+						(this.model.board.get('last-moved') || 'none') 
+					)
+					.appendTo(this.$el);
+
+				drawY += 20; // random buffer, TODO
 				_.each(this._chunkCaptured(capturedWhite), function(chunk) {
 					var $target;
 					drawX = 0;
