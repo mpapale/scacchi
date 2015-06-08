@@ -6,7 +6,7 @@ as though you were in the same room as your opponent. Enjoy!
 ## Running
 ### Prerequisites
 
-1. Pull the latest master branch
+1. Pull the latest master branch.
 2. Ensure you have `npm` and `node`.
 
 ### Start me up
