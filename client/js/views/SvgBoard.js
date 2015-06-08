@@ -25,10 +25,14 @@ define(
 				this.$el.attr('class', this.className);
 
 				this.listenTo(this.model.board, 'change:positions', this.render);
+				this.listenTo(this.model.board, 'change:captured-white', this.render);
+				this.listenTo(this.model.board, 'change:captured-black', this.render);
 			},
 
 			render: function() {
 				var boardPositions = this.model.board.get('positions'),
+					capturedWhite = this.model.board.get('captured-white'),
+					capturedBlack = this.model.board.get('captured-black'),
 					positionSize = SIZE / boardPositions.length,
 					fontSize = positionSize/1.5,
 					white = true,
@@ -41,7 +45,7 @@ define(
 
 				this.$el.attr({
 					width: SIZE,
-					height: SIZE
+					height: SIZE * 2
 				});
 
 				if (this.perspective === 'black') {
@@ -49,6 +53,7 @@ define(
 					boardPositions.reverse();
 				}
 
+				// Render the real board
 				_.each(boardPositions, function(rank, rankIndex) {
 					drawX = 0;
 
@@ -107,6 +112,91 @@ define(
 					drawY += positionSize;
 				}, this);
 
+				// Render the captured pieces
+				drawY += 20; // random buffer, refactor TODO
+				_.each(this._chunkCaptured(capturedWhite), function(chunk) {
+					var $target;
+					drawX = 0;
+					_.each(chunk, function(piece) {
+						$target = $createElement('rect');
+						$target.attr({
+								x: drawX,
+								y: drawY,
+								width: positionSize,
+								height: positionSize,
+								fill: '#eee'
+							})
+							.data({ 
+								$target: $target,
+								piece: piece
+							})
+							.click(this.positionClick.bind(this));
+						this.$el.append($target);
+
+						this.$el.append($createElement('text')
+							.attr({
+								x: drawX + (positionSize/2),
+								y: drawY + (positionSize/2) + (fontSize/2.5),
+								width: positionSize,
+								height: positionSize,
+								'font-size': fontSize,
+								'text-anchor': 'middle',
+								'class': 'board-piece'
+							})
+							.text(piece.label)
+							.data({ 
+								$target: $target,
+								piece: piece
+							})
+							.click(this.positionClick.bind(this))
+						);
+						drawX += positionSize;
+					}, this);
+					drawY += positionSize;
+				}, this);
+
+				drawY += 20; // TODO random buffer refactor
+				_.each(this._chunkCaptured(capturedBlack), function(chunk) {
+					var $target;
+					drawX = 0;
+					_.each(chunk, function(piece) {
+						$target = $createElement('rect');
+						$target.attr({
+								x: drawX,
+								y: drawY,
+								width: positionSize,
+								height: positionSize,
+								fill: '#eee'
+							})
+							.data({ 
+								$target: $target,
+								piece: piece
+							})
+							.click(this.positionClick.bind(this));
+						this.$el.append($target);
+
+						this.$el.append($createElement('text')
+							.attr({
+								x: drawX + (positionSize/2),
+								y: drawY + (positionSize/2) + (fontSize/2.5),
+								width: positionSize,
+								height: positionSize,
+								'font-size': fontSize,
+								'text-anchor': 'middle',
+								'class': 'board-piece'
+							})
+							.text(piece.label)
+							.data({ 
+								$target: $target,
+								piece: piece
+							})
+							.click(this.positionClick.bind(this))
+						);
+						drawX += positionSize;
+					}, this);
+					drawY += positionSize;
+				}, this);
+
 				return this;
 			},
 
@@ -115,20 +205,35 @@ define(
 					$target = $el.data('$target'),
 					cssClass = $target.attr('class'),
 					highlightedPositions = this.$el.find('.highlight'),
-					$highlightedPosition = highlightedPositions.length && $(highlightedPositions.get(0));
+					$highlightedPosition = highlightedPositions.length && $(highlightedPositions.get(0)),
+					piece = $highlightedPosition && $highlightedPosition.data('piece'),
+					args = [];
 
 				if (cssClass === 'highlight') {
 					$target.attr('class', '');
-				} else if ($highlightedPosition) {
-					this.model.board.movePiece(
-						$highlightedPosition.data('rank'), $highlightedPosition.data('file'),
-						$el.data('rank'), $el.data('file')
-					);
+				} else if ($highlightedPosition && !$el.data('piece')) {
+					if (piece) {
+						args.push(piece);
+					} else {
+						args.push($highlightedPosition.data('rank'));
+						args.push($highlightedPosition.data('file'));
+					}
+					args.push($el.data('rank'));
+					args.push($el.data('file'));
+					this.model.board.movePiece.apply(this.model.board, args);
 					$highlightedPosition.attr('class', '');
 					this.model.board.save();
 				} else {
 					$target.attr('class', 'highlight');
 				}
+			},
+
+			_chunkCaptured: function(captured) {
+				return _.toArray(
+					_.groupBy(captured, function(piece, index) {
+						return Math.floor(index / 8);
+					})
+				) || [];
 			}
 		});
 	}
