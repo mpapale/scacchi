@@ -13,4 +13,4 @@ as though you were in the same room as your opponent. Enjoy!
 
 1. Get the latest dependencies: `npm install`.
 2. Run the server: `node index.js`
-3. Navigate to `http://localhost:3000` (3000 is the default port)
+3. Navigate to `http://localhost:5000` (5000 is the default port)
