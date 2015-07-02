@@ -9,7 +9,7 @@ define(
 		_,
 		Backbone
 	) {
-		var SIZE = $(window).width() - 20;
+		var SIZE = Math.min($(window).width(), $(window).height()) - 20;
 
 		var $createElement = function(type) {
 			return $(document.createElementNS('http://www.w3.org/2000/svg', type));
